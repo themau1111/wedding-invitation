@@ -10,6 +10,8 @@ import { PauseIcon, PlayIcon } from '@heroicons/react/16/solid';
 import LazyMotionWrapper from '@/components/LazyMotionWrapper';
 import AnimatedImage from '@/components/AnimatedImage'
 import FlipClock from '@/components/FlipClock';
+import { motion } from "framer-motion";
+import Flowers from '@/components/Flowers';
 
 type Attendee = {
   name: string;
@@ -34,9 +36,12 @@ export default function WeddingInvitation() {
   const [passes, setPasses] = useState<number>(0); // Número de pases asignados
   const [attendees, setAttendees] = useState<Attendee[]>([]); // Lista de acompañantes
   const [notes, setNotes] = useState<string>("");
-  const [isPlaying, setIsPlaying] = useState<boolean>(true);
-  const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState<boolean>(true);
   const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
+  const [showContent, setShowContent] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [closeFlowers, setCloseFlowers] = useState<boolean>(false);
 
 
   const bounceVariants = {
@@ -70,17 +75,53 @@ export default function WeddingInvitation() {
       transition: { duration: 1 },
     },
   };
+
+  // Variantes para las flores
+  const flowersVariants = {
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: { duration: 1.5, ease: "easeInOut" },
+    },
+    hidden: {
+      opacity: 0,
+      scale: 0.9,
+      transition: { duration: 1.5, ease: "easeInOut" },
+    },
+  };
+
+  // Variantes para el velo
+  const veilVariants = {
+    visible: { opacity: 1 },
+    hidden: { opacity: 0, transition: { duration: 2, ease: "easeInOut" } },
+  };
+
+  const messageVariants = {
+    visible: { opacity: 1, y: 0, transition: { duration: 1.5, ease: "easeInOut" } },
+    hidden: { opacity: 0, y: -50, transition: { duration: 1.5, ease: "easeInOut" } },
+  };
+
+  const handleButtonClick = () => {
+    // setIsLoaded(false);
+    togglePlayPause();
+    setShowContent(true); // Muestra el contenido al quitar el velo
+    setTimeout(() => {
+      setCloseFlowers(true)
+    }, 2000);
+  };
   
   
 
   const togglePlayPause = () => {
     const audio = document.getElementById("wedding-music") as HTMLAudioElement;
-    if (audio.paused) {
-      audio.play();
-      setIsPlaying(true);
-    } else {
-      audio.pause();
-      setIsPlaying(false);
+    if (audio) {
+      if (audio.paused) {
+        audio.play();
+        setIsPlaying(true);
+      } else {
+        audio.pause();
+        setIsPlaying(false);
+      }
     }
   };
 
@@ -117,7 +158,7 @@ export default function WeddingInvitation() {
 
     checkIsMobile();
     window.addEventListener("resize", checkIsMobile);
-
+    setIsLoaded(true)
     return () => window.removeEventListener("resize", checkIsMobile);
   }, []);
 
@@ -221,7 +262,7 @@ export default function WeddingInvitation() {
         {/* Mostrar imagen principal */}
         <div className="flex justify-center mb-8">
           <img
-            src="/foto7.jpeg"
+            src="/foto-7.jpg"
             alt="Foto principal"
             className="w-full max-w-md object-contain"
           />
@@ -245,14 +286,64 @@ export default function WeddingInvitation() {
       </div>
     )
   }
+
+  if(!isLoaded){
+    return;
+  }
   
 
   return (
+    <>
     <div className="bg-gray-50 text-gray-900 ">
+
+      {/* Botón para abrir el velo */}
+      {!closeFlowers && (
+      <>
+      <motion.div
+        className="fixed inset-0 flex justify-center items-center z-50"
+        initial="visible"
+        animate={showContent ? "hidden" : "visible"}
+        variants={messageVariants}
+        >
+        <div style={{ position: "absolute", top: "10em" }} className="text-center">
+          <h1 className="text-3xl md:text-5xl font-serif text-white mb-6">
+            Descubre nuestra historia de amor
+          </h1>
+          <button
+            onClick={handleButtonClick}
+            className="px-6 py-3 text-lg font-semibold text-white bg-yellow-600 rounded-md hover:bg-yellow-500 transition duration-300"
+            >
+            Entrar
+          </button>
+        </div>
+      </motion.div>
+
+      {/* Flores */}
+        
+          <motion.div
+            className="flowers-container"
+            initial="visible"
+            animate={showContent ? "hidden" : "visible"}
+            variants={flowersVariants}
+          >
+            <Flowers isLoaded={isLoaded} />
+          </motion.div>
+        
+
+        {/* Velo */}
+        <motion.div
+            className="fixed inset-0 bg-black/80 backdrop-blur-md z-40"
+            initial="visible"
+            animate={showContent ? "hidden" : "visible"} // Controlado por showContent
+            variants={veilVariants}
+          />
+      </>
+      )}
+
       {/* Banner */}
       <LazyMotionWrapper>
       <header className="min-h-screen bg-cover bg-center flex items-end justify-center pb-16 text-white" style={{ 
-        backgroundImage: 'url(/foto7.jpeg)',
+        backgroundImage: 'url(/foto-7.jpg)',
         backgroundSize: 'contain',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'top',
@@ -277,14 +368,13 @@ export default function WeddingInvitation() {
                 </>
               )}
             </button>
-            <audio autoPlay id="wedding-music" src="/music/mi-sol.mp3" loop></audio>
+            <audio id="wedding-music" src="/music/mi-sol.mp3" loop></audio>
           </div>
 
 
           {/* Contenido */}
           <div className="relative z-10 flex flex-col items-center justify-center text-center text-white">
             {/* Superposición oscura */}
-            {/* <div className="absolute inset-0 bg-black bg-opacity-30"></div>§ */}
             {/* Fecha con borde */}
             <img
               src="/mauykary.png"
@@ -312,7 +402,7 @@ export default function WeddingInvitation() {
         <h2 className="text-4xl font-serif text-center mt-16 mb-6 tracking-wider">¿Dónde & cuándo?</h2>
         <div className="flex justify-center rounded overflow-hidden mb-6">
           <img
-            src="/parroquia.jpg"
+            src="/parroquia-1.jpg"
             alt="Foto 1"
             className="w-80 h-full object-contain"
           />
@@ -337,13 +427,13 @@ export default function WeddingInvitation() {
 
             <div className="flex justify-center rounded overflow-hidden mt-10 mb-6">
               <img
-                src="/villa-maria.jpg"
+                src="/villa-maria-salon.jpg"
                 alt="Foto 1"
                 className="w-80 max-w-md object-cover"
                 />
             </div>
             <p className="text-2xl font-serif text-center mt-10 mb-4 tracking-wider">RECEPCIÓN</p>
-            <p className="text-lg font-sans text-center mb-4 tracking-wide">19:30 H</p>
+            <p className="text-lg font-sans text-center mb-4 tracking-wide">19:00 H</p>
             <p className="text-xl font-serif text-center mb-4 tracking-wider">VILLA MARIA</p>
             <p className="text-lg font-sans text-center tracking-normal">Cam. Al Rancho La Teja 148, Centro, 45600</p>
             <p className="text-lg font-sans text-center tracking-normal">Santa Anita, Jal.</p>
@@ -361,7 +451,7 @@ export default function WeddingInvitation() {
 
             <div className="rounded overflow-hidden">
               <img
-                src="/foto5.jpeg"
+                src="/foto-5.jpg"
                 alt="Foto 2"
                 className="w-full h-full object-contain"
                 />
@@ -610,12 +700,12 @@ export default function WeddingInvitation() {
       <section className="p-8 bg-white">
         <h2 className="text-3xl font-bold text-center mb-6">Galería de Fotos</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        <AnimatedImage src="/foto1.jpg" alt="Foto 1" animation={bounceVariants} />
-        <AnimatedImage src="/foto2.jpg" alt="Foto 2" animation={shakeVariants} />
-        <AnimatedImage src="/foto3.jpg" alt="Foto 3" animation={zoomInVariants} />
-        <AnimatedImage src="/foto4.jpg" alt="Foto 4" animation={bounceVariants} />
-        <AnimatedImage src="/foto5.jpeg" alt="Foto 5" animation={shakeVariants} />
-        <AnimatedImage src="/foto6.jpeg" alt="Foto 6" animation={zoomInVariants} />
+        <AnimatedImage src="/foto-1.jpg" alt="Foto 1" animation={bounceVariants} />
+        <AnimatedImage src="/foto-2.jpg" alt="Foto 2" animation={shakeVariants} />
+        <AnimatedImage src="/foto-3.png" alt="Foto 3" animation={zoomInVariants} />
+        <AnimatedImage src="/foto-4.png" alt="Foto 4" animation={bounceVariants} />
+        <AnimatedImage src="/foto-5.jpg" alt="Foto 5" animation={shakeVariants} />
+        <AnimatedImage src="/foto-6.jpg" alt="Foto 6" animation={zoomInVariants} />
         </div>
       </section>
 
@@ -624,5 +714,6 @@ export default function WeddingInvitation() {
         <p>&copy; [2025] [Mauricio lozano & Karina Solis]. Todos los derechos reservados.</p>
       </footer>
     </div>
+    </>
   );
 }
