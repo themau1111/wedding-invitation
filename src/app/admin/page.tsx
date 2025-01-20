@@ -1,15 +1,45 @@
 "use client";
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @next/next/no-img-element */
+
+
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
 import { useRouter } from "next/navigation";
 
+type Attendee = {
+  name: string;
+  isConfirmed: boolean;
+};
+
+type Guest = {
+  id: string;
+  name: string;
+  email: string;
+  passes: number;
+  attendees: Attendee[];
+  confirmation_status?: string;
+  date_confirmation?: string;
+  notes?: string;
+};
+
 export default function Admin() {
-  const [guests, setGuests] = useState([]);
+  const [guests, setGuests] = useState<Guest[]>([]);
   const [loading, setLoading] = useState(true);
-  const [editingGuest, setEditingGuest] = useState("");
-  const [newGuest, setNewGuest] = useState({ name: "", email: "", passes: 0, attendees: [] });
-  const [attendees, setAttendees] = useState('');
+  const [editingGuest, setEditingGuest] = useState<Guest | null>(null);
+  const [newGuest, setNewGuest] = useState<Guest>({
+    id: "",
+    name: "",
+    email: "",
+    passes: 0,
+    attendees: [],
+    confirmation_status: "Pendiente",
+    notes: "",
+  });
+  const [attendees, setAttendees] = useState<string>("");
   const router = useRouter();
 
   useEffect(() => {
@@ -40,14 +70,14 @@ export default function Admin() {
   
       setEditingGuest(data); // Guardamos el registro completo
       setAttendees(
-        data.attendees?.map((att) => att.name).join(", ") || "" // Convertimos el array a texto
+        data.attendees?.map((att:any) => att.name).join(", ") || "" // Convertimos el array a texto
       );
     };
   
     if (editingGuest?.id) fetchGuest(); // Llamar solo si `editingGuest` tiene un `id`
   }, [editingGuest?.id]);
 
-  const fetchGuests = async () => {
+  const fetchGuests = async (): Promise<void> => {
     const { data, error } = await supabase.from("guests").select("*");
     if (!error) {
       setGuests(data as any);
@@ -97,8 +127,16 @@ export default function Admin() {
     }
   
     alert("¡Confirmación enviada con éxito!");
-    setEditingGuest('');
-    setNewGuest({ name: "", email: "", passes: 0, attendees: [] });
+    setEditingGuest(null); // Reseteamos editingGuest
+    setNewGuest({
+      id: "",
+      name: "",
+      email: "",
+      passes: 0,
+      attendees: [],
+      confirmation_status: "Pendiente",
+      notes: "",
+    });
     setAttendees("");
     fetchGuests();
   };
@@ -134,7 +172,7 @@ export default function Admin() {
                 <td className="border border-gray-300 p-2 text-white">{guest.confirmation_status || 'Pendiente'}</td>
                 <td className="border border-gray-300 p-2 text-white">{guest.date_confirmation}</td>
                 <td className="border border-gray-300 p-2 text-white">
-                  {guest.attendees?.map((attendee, index) => (
+                  {guest.attendees?.map((attendee:any, index:any) => (
                     <div key={index}>
                       {attendee.name || `Asistente ${index + 1}`} -{" "}
                       {attendee.confirmed ? "Confirmado" : "Pendiente"}

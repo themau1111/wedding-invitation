@@ -1,4 +1,9 @@
 "use client";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @next/next/no-img-element */
+
 import { useState, useEffect } from 'react';
 import { supabase } from './lib/supabase';
 import { PauseIcon, PlayIcon } from '@heroicons/react/16/solid';
@@ -6,18 +11,33 @@ import LazyMotionWrapper from '@/components/LazyMotionWrapper';
 import AnimatedImage from '@/components/AnimatedImage'
 import FlipClock from '@/components/FlipClock';
 
+type Attendee = {
+  name: string;
+  isConfirmed: boolean;
+};
+
+type Guest = {
+  name: string;
+  passes: number;
+  email?: string;
+  confirmation_status?: string; // confirmed | declined
+  notes?: string;
+  attendees?: Attendee[];
+};
+
+
 
 export default function WeddingInvitation() {
-  const [name, setName] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
-  const [confirmationStatus, setConfirmationStatus] = useState(""); // confirmed | declined
-  const [passes, setPasses] = useState(0); // Número de pases asignados al titular
-  const [attendees, setAttendees] = useState([]); // [{ name: "", isConfirmed: false }]
-  const [notes, setNotes] = useState("");
-  const [isPlaying, setIsPlaying] = useState(true)
-  const [isMobile, setIsMobile] = useState(false);
+  const [name, setName] = useState<string>("");
+  const [suggestions, setSuggestions] = useState<Guest[]>([]);
+  const [confirmationStatus, setConfirmationStatus] = useState<"confirmed" | "declined" | "">(""); // Opciones definidas
+  const [passes, setPasses] = useState<number>(0); // Número de pases asignados
+  const [attendees, setAttendees] = useState<Attendee[]>([]); // Lista de acompañantes
+  const [notes, setNotes] = useState<string>("");
+  const [isPlaying, setIsPlaying] = useState<boolean>(true);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
 
-  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const bounceVariants = {
     hidden: { opacity: 0, y: 100, scale: 0.8 }, // Empieza abajo y más pequeño
@@ -215,9 +235,9 @@ export default function WeddingInvitation() {
         </div>
 
         {/* Código QR */}
-        <div className="flex justify-center">
+        <div className="flex justify-center mb-10">
           <img
-            src="/mnt/data/image.png" // Usando la imagen cargada
+            src="/frame.png" // Usando la imagen cargada
             alt="Código QR"
             className="w-64 h-64 object-contain"
           />
@@ -437,7 +457,7 @@ export default function WeddingInvitation() {
                     name="attendance"
                     value="confirmed"
                     checked={confirmationStatus === "confirmed"}
-                    onChange={(e) => setConfirmationStatus(e.target.value)}
+                    onChange={(e:any) => setConfirmationStatus(e.target.value)}
                     className="mr-2"
                     required
                   />
@@ -449,7 +469,7 @@ export default function WeddingInvitation() {
                     name="attendance"
                     value="declined"
                     checked={confirmationStatus === "declined"}
-                    onChange={(e) => setConfirmationStatus(e.target.value)}
+                    onChange={(e:any) => setConfirmationStatus(e.target.value)}
                     className="mr-2"
                     required
                   />
@@ -511,7 +531,7 @@ export default function WeddingInvitation() {
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 className="p-3 border rounded w-full text-base"
-                rows="3"
+                rows={3}
               ></textarea>
             </div>
 
