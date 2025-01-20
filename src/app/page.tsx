@@ -1,8 +1,6 @@
 "use client";
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @next/next/no-img-element */
 
 import { useState, useEffect } from 'react';
 import { supabase } from './lib/supabase';
