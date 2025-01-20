@@ -19,3 +19,9 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+header {
+  height: 100vh; /* Alternativa básica */
+  height: calc(var(--vh, 1vh) * 100); /* Solución dinámica */
+}
