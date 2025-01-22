@@ -99,8 +99,6 @@ export default function Admin() {
       return;
     }
 
-    console.log("Sesión activa:", session);
-
     // Convertir texto plano en un array de objetos
     const attendeesArray = attendees
       .split(",")
@@ -114,9 +112,9 @@ export default function Admin() {
         .update({ ...editingGuest, attendees: attendeesArray })
         .eq("id", editingGuest.id); // Asegúrate de usar "id" como identificador único
     } else {
-      result = await supabase
-        .from("guests")
-        .insert({ ...newGuest, attendees: attendeesArray });
+      // Crear un nuevo invitado, excluyendo el campo `id`
+      const { id, ...newGuestWithoutId } = newGuest; // Excluir el campo `id`
+      result = await supabase.from("guests").insert({ ...newGuestWithoutId, attendees: attendeesArray });
     }
 
     if (result.error) {
