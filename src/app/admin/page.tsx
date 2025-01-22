@@ -5,7 +5,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 
-
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
 import { useRouter } from "next/navigation";
@@ -62,19 +61,19 @@ export default function Admin() {
         .select("*")
         .eq("id", editingGuest?.id) // Usamos el ID del invitado directamente
         .single();
-  
+
       if (error) {
         console.error("Error al cargar el invitado:", error.message);
         return;
       }
-  
+
       setEditingGuest(data); // Guardamos el registro completo
       setAttendees(
-        data.attendees?.map((att:any) => att.name).join(", ") || "" // Convertimos el array a texto
+        data.attendees?.map((att: any) => att.name).join(", ") || "" // Convertimos el array a texto
       );
     };
-  
-    if (editingGuest?.id) fetchGuest(); // Llamar solo si `editingGuest` tiene un `id`
+
+    if (editingGuest && editingGuest.id) fetchGuest(); // Llamar solo si `editingGuest` tiene un `id`
   }, [editingGuest?.id]);
 
   const fetchGuests = async (): Promise<void> => {
@@ -91,41 +90,41 @@ export default function Admin() {
   };
 
   const handleSave = async () => {
-    const { data: session, error: sessionError } = await supabase.auth.getSession();
-  
+    const { data: session, error: sessionError } =
+      await supabase.auth.getSession();
+
     if (sessionError || !session) {
       console.error("Error de sesión:", sessionError || "No hay sesión activa");
       alert("No puedes guardar datos sin iniciar sesión.");
       return;
     }
-  
+
     console.log("Sesión activa:", session);
 
     // Convertir texto plano en un array de objetos
     const attendeesArray = attendees
-    .split(",")
-    .map((name) => ({
-      name: name.trim(),
-      isConfirmed: true,
-    }))
-    .filter((attendee) => attendee.name !== "");
-  
+      .split(",")
+      .map((name) => ({ name: name.trim() }))
+      .filter((attendee) => attendee.name !== "");
+
     let result;
     if (editingGuest) {
       result = await supabase
         .from("guests")
         .update({ ...editingGuest, attendees: attendeesArray })
-        .eq("id", editingGuest.id);
+        .eq("id", editingGuest.id); // Asegúrate de usar "id" como identificador único
     } else {
-      result = await supabase.from("guests").insert({ ...newGuest, attendees: attendeesArray });
+      result = await supabase
+        .from("guests")
+        .insert({ ...newGuest, attendees: attendeesArray });
     }
-  
+
     if (result.error) {
       console.error("Error al guardar el invitado:", result.error.message);
       alert(`Error: ${result.error.message}`);
       return;
     }
-  
+
     alert("¡Confirmación enviada con éxito!");
     setEditingGuest(null); // Reseteamos editingGuest
     setNewGuest({
@@ -140,8 +139,6 @@ export default function Admin() {
     setAttendees("");
     fetchGuests();
   };
-  
-  
 
   return (
     <div className="container mx-auto p-8">
@@ -151,54 +148,82 @@ export default function Admin() {
       ) : (
         <div className="space-y-4">
           <table className="w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-blue-100">
-              <th className="border border-gray-300 p-2 text-gray-900">Nombre</th>
-              <th className="border border-gray-300 p-2 text-gray-900">Email</th>
-              <th className="border border-gray-300 p-2 text-gray-900">Pases</th>
-              <th className="border border-gray-300 p-2 text-gray-900">Confirmación</th>
-              <th className="border border-gray-300 p-2 text-gray-900">Fecha de confirmación</th>
-              <th className="border border-gray-300 p-2 text-gray-900">Acompañantes</th>
-              <th className="border border-gray-300 p-2 text-gray-900">Notas</th>
-              <th className="border border-gray-300 p-2 text-gray-900">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {guests.map((guest: any) => (
-              <tr key={guest.id} className="bg-gray-800">
-                <td className="border border-gray-300 p-2 text-white">{guest.name}</td>
-                <td className="border border-gray-300 p-2 text-white">{guest.email}</td>
-                <td className="border border-gray-300 p-2 text-white">{guest.passes}</td>
-                <td className="border border-gray-300 p-2 text-white">{guest.confirmation_status || 'Pendiente'}</td>
-                <td className="border border-gray-300 p-2 text-white">{guest.date_confirmation}</td>
-                <td className="border border-gray-300 p-2 text-white">
-                  {guest.attendees?.map((attendee:any, index:any) => (
-                    <div key={index}>
-                      {attendee.name || `Asistente ${index + 1}`} -{" "}
-                      {attendee.confirmed ? "Confirmado" : "Pendiente"}
-                    </div>
-                  ))}
-                </td>
-                <td className="border border-gray-300 p-2 text-white">{guest.notes || "N/A"}</td>
-                <td className="border border-gray-300 p-2">
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() => setEditingGuest(guest)}
-                      className="p-2 bg-yellow-400 text-black rounded"
-                    >
-                      Editar
-                    </button>
-                    <button
-                      onClick={() => handleDelete(guest.id)}
-                      className="p-2 bg-red-500 text-black rounded"
-                    >
-                      Eliminar
-                    </button>
-                  </div>
-                </td>
+            <thead>
+              <tr className="bg-blue-100">
+                <th className="border border-gray-300 p-2 text-gray-900">
+                  Nombre
+                </th>
+                <th className="border border-gray-300 p-2 text-gray-900">
+                  Email
+                </th>
+                <th className="border border-gray-300 p-2 text-gray-900">
+                  Pases
+                </th>
+                <th className="border border-gray-300 p-2 text-gray-900">
+                  Confirmación
+                </th>
+                <th className="border border-gray-300 p-2 text-gray-900">
+                  Fecha de confirmación
+                </th>
+                <th className="border border-gray-300 p-2 text-gray-900">
+                  Acompañantes
+                </th>
+                <th className="border border-gray-300 p-2 text-gray-900">
+                  Notas
+                </th>
+                <th className="border border-gray-300 p-2 text-gray-900">
+                  Acciones
+                </th>
               </tr>
-            ))}
-          </tbody>
+            </thead>
+            <tbody>
+              {guests.map((guest: any) => (
+                <tr key={guest.id} className="bg-gray-800">
+                  <td className="border border-gray-300 p-2 text-white">
+                    {guest.name}
+                  </td>
+                  <td className="border border-gray-300 p-2 text-white">
+                    {guest.email}
+                  </td>
+                  <td className="border border-gray-300 p-2 text-white">
+                    {guest.passes}
+                  </td>
+                  <td className="border border-gray-300 p-2 text-white">
+                    {guest.confirmation_status || "Pendiente"}
+                  </td>
+                  <td className="border border-gray-300 p-2 text-white">
+                    {guest.date_confirmation}
+                  </td>
+                  <td className="border border-gray-300 p-2 text-white">
+                    {guest.attendees?.map((attendee: any, index: any) => (
+                      <div key={index}>
+                        {attendee.name || `Asistente ${index + 1}`} -{" "}
+                        {attendee.confirmed ? "Confirmado" : "Pendiente"}
+                      </div>
+                    ))}
+                  </td>
+                  <td className="border border-gray-300 p-2 text-white">
+                    {guest.notes || "N/A"}
+                  </td>
+                  <td className="border border-gray-300 p-2">
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => setEditingGuest(guest)}
+                        className="p-2 bg-yellow-400 text-black rounded"
+                      >
+                        Editar
+                      </button>
+                      <button
+                        onClick={() => handleDelete(guest.id)}
+                        className="p-2 bg-red-500 text-black rounded"
+                      >
+                        Eliminar
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
           </table>
 
           <div className="p-4 bg-gray-100 rounded">
@@ -208,7 +233,7 @@ export default function Admin() {
             <input
               type="text"
               placeholder="Nombre"
-              value={editingGuest ? editingGuest.name || "" : newGuest.name}
+              value={editingGuest?.name ?? newGuest.name ?? ""}
               onChange={(e) =>
                 editingGuest
                   ? setEditingGuest({ ...editingGuest, name: e.target.value })
@@ -219,7 +244,7 @@ export default function Admin() {
             <input
               type="email"
               placeholder="Email"
-              value={editingGuest ? editingGuest.email : newGuest.email}
+              value={editingGuest?.email ?? newGuest.email ?? ''}
               onChange={(e) =>
                 editingGuest
                   ? setEditingGuest({ ...editingGuest, email: e.target.value })
@@ -231,32 +256,43 @@ export default function Admin() {
               type="number"
               placeholder="Pases"
               value={
-                  editingGuest
+                editingGuest
                   ? editingGuest.passes === 0
-                      ? ""
-                      : editingGuest.passes
+                    ? ""
+                    : editingGuest.passes
                   : newGuest.passes === 0
                   ? ""
                   : newGuest.passes
               }
               onChange={(e) => {
-                  const value = e.target.value === "" ? 0 : parseInt(e.target.value, 10);
-                  if (editingGuest) {
+                const value =
+                  e.target.value === "" ? 0 : parseInt(e.target.value, 10);
+                if (editingGuest) {
                   setEditingGuest({ ...editingGuest, passes: value });
-                  } else {
+                } else {
                   setNewGuest({ ...newGuest, passes: value });
-                  }
+                }
               }}
               className="p-2 w-full border rounded mt-2 text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-blue-500"
             />
 
             {/* Confirmación */}
             <select
-              value={editingGuest ? editingGuest.confirmation_status || "Pendiente" : newGuest.confirmation_status || "Pendiente"}
+              value={
+                editingGuest
+                  ? editingGuest.confirmation_status || "Pendiente"
+                  : newGuest.confirmation_status || "Pendiente"
+              }
               onChange={(e) =>
                 editingGuest
-                  ? setEditingGuest({ ...editingGuest, confirmation_status: e.target.value })
-                  : setNewGuest({ ...newGuest, confirmation_status: e.target.value })
+                  ? setEditingGuest({
+                      ...editingGuest,
+                      confirmation_status: e.target.value,
+                    })
+                  : setNewGuest({
+                      ...newGuest,
+                      confirmation_status: e.target.value,
+                    })
               }
               className="p-2 w-full border rounded mt-2 text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-blue-500"
             >
@@ -264,7 +300,6 @@ export default function Admin() {
               <option value="Confirmado">Confirmado</option>
               <option value="Rechazado">Rechazado</option>
             </select>
-
 
             {/* Acompañantes */}
             <textarea
@@ -277,7 +312,9 @@ export default function Admin() {
             {/* Notas */}
             <textarea
               placeholder="Notas"
-              value={editingGuest ? editingGuest.notes || "" : newGuest.notes || ""}
+              value={
+                editingGuest ? editingGuest.notes || "" : newGuest.notes || ""
+              }
               onChange={(e) =>
                 editingGuest
                   ? setEditingGuest({ ...editingGuest, notes: e.target.value })
@@ -285,7 +322,6 @@ export default function Admin() {
               }
               className="p-2 w-full border rounded mt-2 text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-blue-500"
             />
-
 
             <button
               onClick={handleSave}
