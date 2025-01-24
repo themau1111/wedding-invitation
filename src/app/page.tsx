@@ -109,8 +109,6 @@ export default function WeddingInvitation() {
   };
 
   const handleButtonClick = () => {
-    console.log("toggle", isPlaying);
-    // setIsLoaded(false);
     togglePlayPause();
     setShowContent(true); // Muestra el contenido al quitar el velo
     setTimeout(() => {
@@ -290,7 +288,6 @@ export default function WeddingInvitation() {
             src="/foto-7.jpg"
             alt="Foto principal"
             className="w-full max-w-md object-contain"
-            objectFit="contain"
             width={500}
             height={500}
           />
@@ -310,7 +307,6 @@ export default function WeddingInvitation() {
             src="/frame.png" // Usando la imagen cargada
             alt="Código QR"
             className="w-64 h-64 object-contain"
-            objectFit="contain"
             width={50}
             height={50}
           />
@@ -403,7 +399,6 @@ export default function WeddingInvitation() {
                 src="/parroquia-1.jpg"
                 alt="Foto 1"
                 className="w-80 h-full object-contain"
-                objectFit="contain"
                 width={500}
                 height={500}
               />
@@ -445,7 +440,6 @@ export default function WeddingInvitation() {
                 src="/villa-maria-salon.jpg"
                 alt="Foto 1"
                 className="w-80 max-w-md object-cover"
-                objectFit="contain"
                 width={500}
                 height={500}
               />
@@ -486,7 +480,6 @@ export default function WeddingInvitation() {
               src="/foto-5.jpg"
               alt="Foto 2"
               className="w-full h-full object-contain"
-              objectFit="contain"
               width={500}
               height={500}
             />
@@ -722,7 +715,6 @@ export default function WeddingInvitation() {
               src="/liverpool.png"
               alt="Foto 1"
               className="w-full h-full object-contain"
-              objectFit="contain"
               width={500}
               height={500}
             />
@@ -750,7 +742,6 @@ export default function WeddingInvitation() {
               src="/el-palacio-de-hierro.svg"
               alt="Foto 1"
               className="w-full h-full object-contain"
-              objectFit="contain"
               width={500}
               height={500}
             />

@@ -12,6 +12,26 @@ const MyHeader = ({
 }) => {
   const [backgroundHeight, setBackgroundHeight] = useState(0);
 
+  // useEffect(() => {
+  //   const img = new Image();
+  //   img.src = "/foto-7.jpg";
+  //   img.onload = () => {
+  //     const aspectRatio = img.width / img.height;
+  //     const containerWidth = window.innerWidth * window.devicePixelRatio; // Ajuste para densidad de píxeles
+  //     const calculatedHeight = containerWidth / aspectRatio;
+  //     setBackgroundHeight(calculatedHeight);
+  //   };
+
+  //   const handleResize = () => {
+  //     const containerWidth = window.innerWidth * window.devicePixelRatio;
+  //     const calculatedHeight = containerWidth / (img.width / img.height);
+  //     setBackgroundHeight(calculatedHeight);
+  //   };
+
+  //   window.addEventListener("resize", handleResize);
+  //   return () => window.removeEventListener("resize", handleResize);
+  // }, []);
+
   useEffect(() => {
     // Cargar la imagen y calcular su tamaño dinámico
     const img = new Image();
@@ -21,6 +41,7 @@ const MyHeader = ({
       const containerWidth = window.innerWidth;
       const calculatedHeight = containerWidth / aspectRatio; // Altura proporcional
       setBackgroundHeight(calculatedHeight);
+      console.log(calculatedHeight, "height1");
     };
 
     // Actualizar tamaño al redimensionar ventana
@@ -28,6 +49,7 @@ const MyHeader = ({
       const containerWidth = window.innerWidth;
       const calculatedHeight = containerWidth / (img.width / img.height);
       setBackgroundHeight(calculatedHeight);
+      console.log(calculatedHeight, "height");
     };
 
     window.addEventListener("resize", handleResize);
@@ -40,7 +62,8 @@ const MyHeader = ({
       style={{
         height: `${backgroundHeight}px`, // La altura dinámica basada en el fondo
         backgroundImage: "url(/foto-7.jpg)",
-        backgroundSize: "contain",
+        //  paddingTop: "calc(100% * (551.565 / 1080))",
+        backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "top",
         backgroundColor: "#fff",
@@ -74,8 +97,6 @@ const MyHeader = ({
           src="/mauykary.png"
           alt="Foto Mau y Kary"
           className="w-full max-h-[30%] object-contain"
-          layout="responsive"
-          objectFit="contain"
           width={500}
           height={500}
         />
