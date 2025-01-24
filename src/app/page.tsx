@@ -4,15 +4,14 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "./lib/supabase";
-import { PauseIcon, PlayIcon } from "@heroicons/react/16/solid";
 import LazyMotionWrapper from "@/components/LazyMotionWrapper";
 import AnimatedImage from "@/components/AnimatedImage";
-import FlipClock from "@/components/FlipClock";
 import { motion } from "framer-motion";
 import Flowers from "@/components/Flowers";
 import Swal from "sweetalert2";
 import GoogleCalendar from "@/components/GoogleCalendar";
-import MyHeader from "@/components/header";
+import MyHeader from "@/components/MyHeader";
+import NextImage from "next/image";
 
 type Attendee = {
   name: string;
@@ -110,6 +109,7 @@ export default function WeddingInvitation() {
   };
 
   const handleButtonClick = () => {
+    console.log("toggle", isPlaying);
     // setIsLoaded(false);
     togglePlayPause();
     setShowContent(true); // Muestra el contenido al quitar el velo
@@ -368,7 +368,7 @@ export default function WeddingInvitation() {
 
         {/* Banner */}
         <LazyMotionWrapper>
-          <MyHeader togglePlayPause={togglePlayPause} />
+          <MyHeader togglePlayPause={togglePlayPause} isPlaying={isPlaying} />
         </LazyMotionWrapper>
 
         {/*Mensaje de invitacion*/}

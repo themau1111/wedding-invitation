@@ -1,10 +1,16 @@
 import { useEffect, useState } from "react";
 import { PauseIcon, PlayIcon } from "@heroicons/react/16/solid";
 import FlipClock from "./FlipClock";
+import NextImage from "next/image";
 
-const MyHeader = (togglePlayPause: any) => {
+const MyHeader = ({
+  togglePlayPause,
+  isPlaying,
+}: {
+  togglePlayPause: () => void;
+  isPlaying: boolean;
+}) => {
   const [backgroundHeight, setBackgroundHeight] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     // Cargar la imagen y calcular su tamaño dinámico
@@ -44,8 +50,8 @@ const MyHeader = (togglePlayPause: any) => {
       {/* Botón de audio */}
       <div className="absolute top-4 right-4 text-white rounded-lg flex items-center gap-2">
         <button
-          onClick={() => togglePlayPause}
-          className="text-black font-bold py-2 px-4 rounded bg-opacity-30 bg-black shadow-lg transition flex items-center gap-2"
+          onClick={togglePlayPause}
+          className="text-black font-bold py-2 px-4 rounded bg-opacity-30 bg-black shadow-lg transition flex items-center gap-2 z-20000"
         >
           {isPlaying ? (
             <PauseIcon className="h-6 w-6 text-white" />
@@ -64,10 +70,14 @@ const MyHeader = (togglePlayPause: any) => {
         }}
       >
         {/* Imagen Mau y Kary */}
-        <img
+        <NextImage
           src="/mauykary.png"
           alt="Foto Mau y Kary"
+          layout="responsive"
           className="w-full max-h-[30%] object-contain"
+          objectFit="contain"
+          width={500}
+          height={500}
         />
 
         {/* Reloj */}
