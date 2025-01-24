@@ -368,7 +368,7 @@ export default function WeddingInvitation() {
         {/* Banner */}
         <LazyMotionWrapper>
           <header
-            className="min-h-screen bg-cover bg-center flex items-end justify-center pb-16 text-white"
+            className="min-h-screen bg-cover bg-center relative text-white"
             style={{
               backgroundImage: "url(/foto-7.jpg)",
               backgroundSize: "contain",
@@ -397,13 +397,13 @@ export default function WeddingInvitation() {
             </div>
 
             {/* Contenido */}
-            <div className="relative z-10 flex flex-col items-center justify-center text-center text-white">
+            <div className="relative z-10 flex flex-col items-center justify-center text-center text-white gap-6">
               {/* Superposición oscura */}
               {/* Fecha con borde */}
               <img
                 src="/mauykary.png"
                 alt="Foto 1"
-                className="w-100 object-contain mb-6"
+                className="max-w-full max-h-72 object-contain"
               />
 
               <FlipClock />
@@ -585,6 +585,7 @@ export default function WeddingInvitation() {
                 <input
                   type="text"
                   placeholder="Busca tu nombre"
+                  onFocus={(e) => e.target.scrollIntoView({ behavior: "smooth" })}
                   value={name}
                   onChange={(e) => {
                     setName(e.target.value);
@@ -595,7 +596,7 @@ export default function WeddingInvitation() {
                   required
                 />
                 {showSuggestions && suggestions.length > 0 && (
-                  <ul className="absolute bg-white border rounded mt-1 w-full">
+                  <ul className="absolute bg-white border rounded mt-1 w-full max-h-48 overflow-y-auto z-50 shadow-lg">
                     {suggestions.map((guest, index) => (
                       <li
                         key={index}
