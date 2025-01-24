@@ -73,8 +73,8 @@ const MyHeader = ({
         <NextImage
           src="/mauykary.png"
           alt="Foto Mau y Kary"
-          layout="responsive"
           className="w-full max-h-[30%] object-contain"
+          layout="responsive"
           objectFit="contain"
           width={500}
           height={500}

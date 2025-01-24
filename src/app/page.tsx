@@ -286,10 +286,13 @@ export default function WeddingInvitation() {
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
         {/* Mostrar imagen principal */}
         <div className="flex justify-center mb-8">
-          <img
+          <NextImage
             src="/foto-7.jpg"
             alt="Foto principal"
             className="w-full max-w-md object-contain"
+            objectFit="contain"
+            width={500}
+            height={500}
           />
         </div>
 
@@ -303,10 +306,13 @@ export default function WeddingInvitation() {
 
         {/* Código QR */}
         <div className="flex justify-center mb-10">
-          <img
+          <NextImage
             src="/frame.png" // Usando la imagen cargada
             alt="Código QR"
             className="w-64 h-64 object-contain"
+            objectFit="contain"
+            width={50}
+            height={50}
           />
         </div>
       </div>
@@ -393,10 +399,13 @@ export default function WeddingInvitation() {
               ¿Dónde & cuándo?
             </h2>
             <div className="flex justify-center rounded overflow-hidden mb-6">
-              <img
+              <NextImage
                 src="/parroquia-1.jpg"
                 alt="Foto 1"
                 className="w-80 h-full object-contain"
+                objectFit="contain"
+                width={500}
+                height={500}
               />
             </div>
           </LazyMotionWrapper>
@@ -432,10 +441,13 @@ export default function WeddingInvitation() {
 
           <LazyMotionWrapper>
             <div className="flex justify-center rounded overflow-hidden mt-10 mb-6">
-              <img
+              <NextImage
                 src="/villa-maria-salon.jpg"
                 alt="Foto 1"
                 className="w-80 max-w-md object-cover"
+                objectFit="contain"
+                width={500}
+                height={500}
               />
             </div>
             <p className="text-2xl font-serif text-center mt-10 mb-4 tracking-wider">
@@ -470,10 +482,13 @@ export default function WeddingInvitation() {
           </div>
 
           <div className="rounded overflow-hidden">
-            <img
+            <NextImage
               src="/foto-5.jpg"
               alt="Foto 2"
               className="w-full h-full object-contain"
+              objectFit="contain"
+              width={500}
+              height={500}
             />
           </div>
         </LazyMotionWrapper>
@@ -703,10 +718,13 @@ export default function WeddingInvitation() {
           </div>
 
           <div className=" p-8 pt-10 shadow-md text-center">
-            <img
+            <NextImage
               src="/liverpool.png"
               alt="Foto 1"
               className="w-full h-full object-contain"
+              objectFit="contain"
+              width={500}
+              height={500}
             />
             <p className="text-gray-600 text-sm uppercase tracking-wide">
               No. de evento
@@ -728,10 +746,13 @@ export default function WeddingInvitation() {
         {/* Mesa de regalos palacio de hierro*/}
         <LazyMotionWrapper>
           <div className="p-8 pt-10 shadow-md text-center">
-            <img
+            <NextImage
               src="/el-palacio-de-hierro.svg"
               alt="Foto 1"
               className="w-full h-full object-contain"
+              objectFit="contain"
+              width={500}
+              height={500}
             />
             <p className="text-gray-600 text-sm uppercase tracking-wide mt-4">
               No. de evento
