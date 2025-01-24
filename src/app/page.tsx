@@ -12,6 +12,7 @@ import { motion } from "framer-motion";
 import Flowers from "@/components/Flowers";
 import Swal from "sweetalert2";
 import GoogleCalendar from "@/components/GoogleCalendar";
+import MyHeader from "@/components/header";
 
 type Attendee = {
   name: string;
@@ -367,65 +368,13 @@ export default function WeddingInvitation() {
 
         {/* Banner */}
         <LazyMotionWrapper>
-          <header
-            className="min-h-screen bg-cover bg-center relative text-white"
-            style={{
-              backgroundImage: "url(/foto-7.jpg)",
-              backgroundSize: "contain",
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "top",
-              backgroundColor: "#fff",
-            }}
-          >
-            {/* Reproductor de Música Compacto */}
-            <div className="absolute top-4 right-4 text-white rounded-lg flex items-center gap-2">
-              <button
-                onClick={togglePlayPause}
-                className=" text-black font-bold py-2 px-4 rounded bg-opacity-30 bg-black shadow-lg transition flex items-center gap-2"
-              >
-                {isPlaying ? (
-                  <>
-                    <PauseIcon className="h-6 w-6 text-black" />
-                  </>
-                ) : (
-                  <>
-                    <PlayIcon className="h-6 w-6 text-black" />
-                  </>
-                )}
-              </button>
-              <audio id="wedding-music" src="/music/mi-sol.mp3" loop></audio>
-            </div>
-
-            {/* Contenido */}
-            <div
-              className="absolute inset-0 flex flex-col justify-end items-center text-center"
-              style={{
-                height: "calc(100% - 150px)", // Ajusta este valor según la altura del reloj o márgenes necesarios
-              }}
-            >
-              {/* Superposición oscura */}
-              {/* Fecha con borde */}
-              <img
-                src="/mauykary.png"
-                alt="Foto Mau y Kary"
-                className="w-full max-h-[30%] object-contain"
-              />
-              <div
-                className="w-full bg-white text-black py-4"
-                style={{
-                  height: "150px", // Espacio reservado para el reloj
-                }}
-              >
-                <FlipClock />
-              </div>
-            </div>
-          </header>
+          <MyHeader togglePlayPause={togglePlayPause} />
         </LazyMotionWrapper>
 
         {/*Mensaje de invitacion*/}
         <LazyMotionWrapper>
           <div>
-            <h2 className="text-4xl font-serif text-center mt-16 mb-6 tracking-wider">
+            <h2 className="text-4xl font-serif text-center mt-40 mb-6 tracking-wider">
               ¡Nos casamos!
             </h2>
             <p className="text-lg font-sans text-center tracking-normal mb-1">
