@@ -272,7 +272,7 @@ export default function WeddingInvitation() {
         confirmButton: "bg-blue-500 text-white px-4 py-2 rounded",
       },
     });
-    
+
     setName("");
     setConfirmationStatus("");
     setNotes("");
@@ -397,16 +397,27 @@ export default function WeddingInvitation() {
             </div>
 
             {/* Contenido */}
-            <div className="relative z-10 flex flex-col items-center justify-center text-center text-white gap-6">
+            <div
+              className="absolute inset-0 flex flex-col justify-end items-center text-center"
+              style={{
+                height: "calc(100% - 150px)", // Ajusta este valor según la altura del reloj o márgenes necesarios
+              }}
+            >
               {/* Superposición oscura */}
               {/* Fecha con borde */}
               <img
                 src="/mauykary.png"
-                alt="Foto 1"
-                className="max-w-full max-h-72 object-contain"
+                alt="Foto Mau y Kary"
+                className="w-full max-h-[30%] object-contain"
               />
-
-              <FlipClock />
+              <div
+                className="w-full bg-white text-black py-4"
+                style={{
+                  height: "150px", // Espacio reservado para el reloj
+                }}
+              >
+                <FlipClock />
+              </div>
             </div>
           </header>
         </LazyMotionWrapper>
@@ -585,7 +596,9 @@ export default function WeddingInvitation() {
                 <input
                   type="text"
                   placeholder="Busca tu nombre"
-                  onFocus={(e) => e.target.scrollIntoView({ behavior: "smooth" })}
+                  onFocus={(e) =>
+                    e.target.scrollIntoView({ behavior: "smooth" })
+                  }
                   value={name}
                   onChange={(e) => {
                     setName(e.target.value);
