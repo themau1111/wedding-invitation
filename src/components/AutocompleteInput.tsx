@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import React, { useState } from "react";
 import {
   Combobox,
   ComboboxInput,
@@ -30,15 +32,15 @@ const AutocompleteInput = ({
     setName(value);
   };
 
-  useEffect(() => {
+  const selectNewGuest = (e: any) => {
+    setSelectedGuest(e);
     handleSelectGuest(selectedGuest);
-    console.log(selectedGuest);
-  }, [selectedGuest]);
+  };
 
   return (
     <div className="relative">
       <label className="block mb-2 text-lg font-sans">Nombre Completo</label>
-      <Combobox value={selectedGuest} onChange={setSelectedGuest}>
+      <Combobox value={selectedGuest} onChange={selectNewGuest}>
         <ComboboxInput
           className="p-3 border rounded w-full text-base"
           placeholder="Busca tu nombre"
