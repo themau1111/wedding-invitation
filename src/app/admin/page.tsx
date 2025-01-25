@@ -3,7 +3,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @next/next/no-img-element */
 
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
@@ -114,7 +113,9 @@ export default function Admin() {
     } else {
       // Crear un nuevo invitado, excluyendo el campo `id`
       const { id, ...newGuestWithoutId } = newGuest; // Excluir el campo `id`
-      result = await supabase.from("guests").insert({ ...newGuestWithoutId, attendees: attendeesArray });
+      result = await supabase
+        .from("guests")
+        .insert({ ...newGuestWithoutId, attendees: attendeesArray });
     }
 
     if (result.error) {
@@ -242,7 +243,7 @@ export default function Admin() {
             <input
               type="email"
               placeholder="Email"
-              value={editingGuest?.email ?? newGuest.email ?? ''}
+              value={editingGuest?.email ?? newGuest.email ?? ""}
               onChange={(e) =>
                 editingGuest
                   ? setEditingGuest({ ...editingGuest, email: e.target.value })
