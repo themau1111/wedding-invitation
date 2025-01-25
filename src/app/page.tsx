@@ -12,6 +12,7 @@ import Swal from "sweetalert2";
 import GoogleCalendar from "@/components/GoogleCalendar";
 import MyHeader from "@/components/MyHeader";
 import NextImage from "next/image";
+import AutocompleteInput from "@/components/AutocompleteInput";
 
 type Attendee = {
   name: string;
@@ -140,7 +141,7 @@ export default function WeddingInvitation() {
       if (name.length > 0) {
         const { data, error } = await supabase
           .from("guests")
-          .select("name, passes, email, confirmation_status, notes")
+          .select("name, passes")
           .ilike("name", `%${name}%`);
 
         if (!error) {
@@ -202,20 +203,25 @@ export default function WeddingInvitation() {
 
   // Manejar selección de un invitado
   const handleSelectGuest = (guest: any) => {
-    setName(guest.name);
-    setPasses(guest.passes || 1);
-    setConfirmationStatus(guest.confirmation_status || "");
-    setNotes(guest.notes || "");
-    setSuggestions([]);
+    if (guest) {
+      setName(guest.name);
+      setPasses(guest.passes || 1);
+      setConfirmationStatus(guest.confirmation_status || "");
+      setNotes(guest.notes || "");
+      setSuggestions([]);
 
-    setAttendees(
-      Array.from({ length: guest.passes - 1 }, () => ({
-        name: "",
-        isConfirmed: false,
-      }))
-    );
+      setAttendees(
+        Array.from({ length: guest.passes - 1 }, () => ({
+          name: "",
+          isConfirmed: false,
+        }))
+      );
 
-    setTimeout(() => setShowSuggestions(false), 100);
+      setTimeout(() => setShowSuggestions(false), 100);
+    } else {
+      setShowSuggestions(false);
+      setSuggestions([]);
+    }
   };
 
   // Manejar envío del formulario
@@ -547,7 +553,7 @@ export default function WeddingInvitation() {
             >
               {/* Nombre con Autocompletar */}
               <div className="relative">
-                <label className="block mb-2 text-lg font-sans">
+                {/* <label className="block mb-2 text-lg font-sans">
                   Nombre Completo
                 </label>
                 <input
@@ -564,20 +570,29 @@ export default function WeddingInvitation() {
                   }}
                   className="p-3 border rounded w-full text-base"
                   required
+                /> */}
+                <AutocompleteInput
+                  handleSelectGuest={handleSelectGuest}
+                  suggestions={suggestions}
+                  onQueryChange={setName}
                 />
-                {showSuggestions && suggestions.length > 0 && (
-                  <ul className="absolute bg-white border rounded mt-1 w-full max-h-48 overflow-y-auto z-50 shadow-lg">
-                    {suggestions.map((guest, index) => (
-                      <li
-                        key={index}
-                        onClick={() => handleSelectGuest(guest)}
-                        className="p-2 cursor-pointer hover:bg-gray-100 text-base"
-                      >
-                        {guest.name} ({guest.passes} pases)
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                {/* {showSuggestions && suggestions.length > 0 && (
+                  // <ul
+                  //   style={{ WebkitOverflowScrolling: "touch" }}
+                  //   className="absolute bg-white border rounded mt-1 w-full max-h-48 overflow-y-auto z-50 shadow-lg"
+                  // >
+                  //   {suggestions.map((guest, index) => (
+                  //     <li
+                  //       key={index}
+                  //       onClick={() => handleSelectGuest(guest)}
+                  //       className="p-2 cursor-pointer hover:bg-gray-100 text-base"
+                  //     >
+                  //       {guest.name} ({guest.passes} pases)
+                  //     </li>
+                  //   ))}
+                  // </ul>
+                  
+                )} */}
               </div>
 
               {/* Radio Buttons */}
@@ -686,7 +701,14 @@ export default function WeddingInvitation() {
               {/* Botón de Enviar */}
               <button
                 type="submit"
-                className="w-full p-3 bg-black text-white rounded text-lg font-serif tracking-wider"
+                disabled={passes <= 0}
+                className={`w-full p-3 
+                  ${
+                    passes > 0
+                      ? "bg-black text-white"
+                      : "bg-gray-400 text-gray-700"
+                  } 
+                  rounded text-lg font-serif tracking-wider`}
               >
                 CONFIRMAR ASISTENCIA
               </button>
