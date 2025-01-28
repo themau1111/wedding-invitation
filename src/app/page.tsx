@@ -13,24 +13,15 @@ import GoogleCalendar from "@/components/GoogleCalendar";
 import MyHeader from "@/components/MyHeader";
 import NextImage from "next/image";
 import AutocompleteInput from "@/components/AutocompleteInput";
+import React, { useRef } from "react";
 
 type Attendee = {
   name: string;
   isConfirmed: boolean;
 };
 
-type Guest = {
-  name: string;
-  passes: number;
-  email?: string;
-  confirmation_status?: string; // confirmed | declined
-  notes?: string;
-  attendees?: Attendee[];
-};
-
 export default function WeddingInvitation() {
   const [name, setName] = useState<string>("");
-  const [suggestions, setSuggestions] = useState<Guest[]>([]);
   const [confirmationStatus, setConfirmationStatus] = useState<
     "confirmed" | "declined" | ""
   >(""); // Opciones definidas
@@ -39,10 +30,10 @@ export default function WeddingInvitation() {
   const [notes, setNotes] = useState<string>("");
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(true);
-  const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
   const [showContent, setShowContent] = useState<boolean>(false);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [closeFlowers, setCloseFlowers] = useState<boolean>(false);
+  const selectRef = useRef<any>(null);
 
   const bounceVariants = {
     hidden: { opacity: 0, y: 100, scale: 0.8 }, // Empieza abajo y más pequeño
@@ -135,25 +126,6 @@ export default function WeddingInvitation() {
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }, // Aparece suavemente
   };
 
-  // Buscar nombres en Supabase
-  useEffect(() => {
-    const fetchSuggestions = async () => {
-      if (name.length > 0) {
-        const { data, error } = await supabase
-          .from("guests")
-          .select("name, passes")
-          .ilike("name", `%${name}%`);
-
-        if (!error) {
-          setSuggestions((data as any) || []);
-        }
-      } else {
-        setSuggestions([]);
-      }
-    };
-    fetchSuggestions();
-  }, [name]);
-
   useEffect(() => {
     // Detectar si es un dispositivo móvil
     const checkIsMobile = () => {
@@ -166,67 +138,94 @@ export default function WeddingInvitation() {
     return () => window.removeEventListener("resize", checkIsMobile);
   }, []);
 
-  useEffect(() => {
-    const fetchGuest = async () => {
-      const { data, error } = await supabase
-        .from("guests")
-        .select("*")
-        .eq("name", name);
+  const fetchGuest = async () => {
+    const { data, error } = await supabase
+      .from("guests")
+      .select("*")
+      .eq("name", name);
 
-      if (error) {
-        console.error("Error al cargar el invitado:", error.message);
-        return;
-      }
+    if (error) {
+      console.error("Error al cargar el invitado:", error.message);
+      return;
+    }
 
-      if (data.length === 0) {
-        return;
-      }
+    if (data.length === 0) {
+      return;
+    }
 
-      if (data.length > 1) {
-        console.error("Se encontraron múltiples invitados con este nombre.");
-        return;
-      }
+    if (data.length > 1) {
+      console.error("Se encontraron múltiples invitados con este nombre.");
+      return;
+    }
 
-      // Configurar los datos si se encontró exactamente un registro
-      const guest = data[0];
-      setPasses(guest.passes || 1);
-      setAttendees(
-        Array.from({ length: guest.passes - 1 }, (_, index) => ({
-          name: guest.attendees?.[index]?.name || "",
-          isConfirmed: guest.attendees?.[index]?.isConfirmed || false,
-        }))
-      );
-    };
+    // Configurar los datos si se encontró exactamente un registro
+    const guest = data[0];
+    setPasses(guest.passes || 1);
+    setAttendees(
+      Array.from({ length: guest.passes - 1 }, (_, index) => ({
+        name: guest.attendees?.[index]?.name || "",
+        isConfirmed: guest.attendees?.[index]?.isConfirmed || false,
+      }))
+    );
 
-    fetchGuest();
-  }, [name]);
+    return !error;
+  };
 
   // Manejar selección de un invitado
-  const handleSelectGuest = (guest: any) => {
+  const handleSelectGuest = async (guest: any) => {
     if (guest) {
+      const exist = await fetchGuest();
       setName(guest.name);
       setPasses(guest.passes || 1);
-      setConfirmationStatus(guest.confirmation_status || "");
-      setNotes(guest.notes || "");
-      setSuggestions([]);
-
-      setAttendees(
-        Array.from({ length: guest.passes - 1 }, () => ({
-          name: "",
-          isConfirmed: false,
-        }))
-      );
-
-      setTimeout(() => setShowSuggestions(false), 100);
+      if (exist) {
+        setConfirmationStatus(guest.confirmation_status || "");
+        setNotes(guest.notes || "");
+      } else {
+        setNotes("");
+        setAttendees([]);
+        setConfirmationStatus("");
+      }
     } else {
-      setShowSuggestions(false);
-      setSuggestions([]);
+      setNotes("");
+      setAttendees([]);
+      setConfirmationStatus("");
     }
   };
 
   // Manejar envío del formulario
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+
+    // Validar que el campo `name` tenga un valor
+    if (!name.trim()) {
+      Swal.fire("Error", "El nombre del invitado es obligatorio", "error");
+      return;
+    }
+
+    // Verificar si el invitado ya existe
+    const { data: existingGuest, error: fetchError } = await supabase
+      .from("guests")
+      .select("*")
+      .eq("name", name)
+      .single();
+
+    if (fetchError) {
+      Swal.fire(
+        "Error",
+        "Error al buscar el invitado: " + fetchError.message,
+        "error"
+      );
+      return;
+    }
+
+    if (!existingGuest) {
+      Swal.fire(
+        "Error",
+        "El invitado no existe y no se puede crear uno nuevo",
+        "error"
+      );
+      return;
+    }
 
     // Preparar los asistentes adicionales
     const additionalGuests = attendees
@@ -244,22 +243,23 @@ export default function WeddingInvitation() {
       attendees: additionalGuests,
     };
 
-    // Insertar o actualizar el registro principal con los asistentes adicionales
-    const { error } = await supabase.from("guests").upsert(
-      {
-        name,
-        confirmation_status: confirmationStatus,
-        notes,
-        date_confirmation: new Date().toISOString(),
-        attendees: additionalGuests, // Guardar asistentes adicionales como JSON
-      },
-      {
-        onConflict: "name", // Asegura que se use la columna `name` como clave única
-      }
-    );
+    // Inserción o actualización en la tabla
+    const { error } = await supabase
+      .from("guests")
+      .update(updatedGuest)
+      .eq("name", name);
 
     if (error) {
       alert("Error al enviar la confirmación: " + error.message);
+    }
+
+    if (error) {
+      Swal.fire(
+        "Error",
+        "Error al actualizar el invitado: " + error.message,
+        "error"
+      );
+      return;
     }
 
     const url = GoogleCalendar();
@@ -278,10 +278,18 @@ export default function WeddingInvitation() {
       },
     });
 
+    resetForm();
+  };
+
+  const resetForm = () => {
     setName("");
     setConfirmationStatus("");
     setNotes("");
+    setPasses(1);
     setAttendees([]);
+    if (selectRef.current) {
+      selectRef.current.clearValue(); // Limpia el componente Select
+    }
   };
 
   if (!isMobile) {
@@ -553,46 +561,10 @@ export default function WeddingInvitation() {
             >
               {/* Nombre con Autocompletar */}
               <div className="relative">
-                {/* <label className="block mb-2 text-lg font-sans">
-                  Nombre Completo
-                </label>
-                <input
-                  type="text"
-                  placeholder="Busca tu nombre"
-                  onFocus={(e) =>
-                    e.target.scrollIntoView({ behavior: "smooth" })
-                  }
-                  value={name}
-                  onChange={(e) => {
-                    setName(e.target.value);
-                    // Mostrar sugerencias cuando el usuario escribe
-                    setShowSuggestions(true);
-                  }}
-                  className="p-3 border rounded w-full text-base"
-                  required
-                /> */}
                 <AutocompleteInput
+                  ref={selectRef}
                   handleSelectGuest={handleSelectGuest}
-                  suggestions={suggestions}
-                  onQueryChange={setName}
                 />
-                {/* {showSuggestions && suggestions.length > 0 && (
-                  // <ul
-                  //   style={{ WebkitOverflowScrolling: "touch" }}
-                  //   className="absolute bg-white border rounded mt-1 w-full max-h-48 overflow-y-auto z-50 shadow-lg"
-                  // >
-                  //   {suggestions.map((guest, index) => (
-                  //     <li
-                  //       key={index}
-                  //       onClick={() => handleSelectGuest(guest)}
-                  //       className="p-2 cursor-pointer hover:bg-gray-100 text-base"
-                  //     >
-                  //       {guest.name} ({guest.passes} pases)
-                  //     </li>
-                  //   ))}
-                  // </ul>
-                  
-                )} */}
               </div>
 
               {/* Radio Buttons */}
