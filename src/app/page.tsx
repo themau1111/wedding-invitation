@@ -20,6 +20,17 @@ type Attendee = {
   isConfirmed: boolean;
 };
 
+type Guest = {
+  id: string;
+  name: string;
+  email: string;
+  passes: number;
+  attendees: Attendee[];
+  confirmation_status?: string;
+  date_confirmation?: string;
+  notes?: string;
+};
+
 export default function WeddingInvitation() {
   const [name, setName] = useState<string>("");
   const [confirmationStatus, setConfirmationStatus] = useState<
@@ -228,6 +239,15 @@ export default function WeddingInvitation() {
       return;
     }
 
+    // 🔹 2. Hacer fetch de TODOS los invitados para el Excel
+    const { data: allGuests } = await supabase.from("guests").select("*");
+
+    // 🔹 3. Preparar los datos para el backend
+    const guestData = {
+      guests: allGuests, // 👉 Aquí se envían TODOS los invitados
+      updatedGuest,
+    };
+
     const url = GoogleCalendar();
 
     // alert("¡Confirmación enviada con éxito!");
@@ -244,7 +264,34 @@ export default function WeddingInvitation() {
       },
     });
 
+    sendNotification(guestData);
+
     resetForm();
+  };
+
+  const sendNotification = async (guestData: any) => {
+    try {
+      const response = await fetch(
+        "https://wedding-backend-eta.vercel.app/api/notify",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(guestData),
+        }
+      );
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log("Notificación enviada:", result.message);
+      } else {
+        console.error("Error al enviar la notificación:", result.message);
+      }
+    } catch (error) {
+      console.error("Error en la solicitud:", error);
+    }
   };
 
   const resetForm = () => {
