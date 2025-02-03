@@ -188,7 +188,7 @@ export default function Admin() {
                     {guest.passes}
                   </td>
                   <td className="border border-gray-300 p-2 text-white">
-                    {guest.confirmation_status || "Pendiente"}
+                    {guest.confirmation_status}
                   </td>
                   <td className="border border-gray-300 p-2 text-white">
                     {guest.date_confirmation}
@@ -197,7 +197,7 @@ export default function Admin() {
                     {guest.attendees?.map((attendee: any, index: any) => (
                       <div key={index}>
                         {attendee.name || `Asistente ${index + 1}`} -{" "}
-                        {attendee.confirmed ? "Confirmado" : "Pendiente"}
+                        {attendee.isConfirmed ? "Confirmado" : "Pendiente"}
                       </div>
                     ))}
                   </td>

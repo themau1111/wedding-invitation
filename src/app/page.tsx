@@ -138,53 +138,19 @@ export default function WeddingInvitation() {
     return () => window.removeEventListener("resize", checkIsMobile);
   }, []);
 
-  const fetchGuest = async () => {
-    const { data, error } = await supabase
-      .from("guests")
-      .select("*")
-      .eq("name", name);
-
-    if (error) {
-      console.error("Error al cargar el invitado:", error.message);
-      return;
-    }
-
-    if (data.length === 0) {
-      return;
-    }
-
-    if (data.length > 1) {
-      console.error("Se encontraron múltiples invitados con este nombre.");
-      return;
-    }
-
-    // Configurar los datos si se encontró exactamente un registro
-    const guest = data[0];
-    setPasses(guest.passes || 1);
-    setAttendees(
-      Array.from({ length: guest.passes - 1 }, (_, index) => ({
-        name: guest.attendees?.[index]?.name || "",
-        isConfirmed: guest.attendees?.[index]?.isConfirmed || false,
-      }))
-    );
-
-    return !error;
-  };
-
   // Manejar selección de un invitado
   const handleSelectGuest = async (guest: any) => {
     if (guest) {
-      const exist = await fetchGuest();
       setName(guest.name);
       setPasses(guest.passes || 1);
-      if (exist) {
-        setConfirmationStatus(guest.confirmation_status || "");
-        setNotes(guest.notes || "");
-      } else {
-        setNotes("");
-        setAttendees([]);
-        setConfirmationStatus("");
-      }
+      setConfirmationStatus(guest.confirmation_status || "");
+      setNotes(guest.notes || "");
+      setAttendees(
+        Array.from({ length: guest.passes - 1 }, (_, index) => ({
+          name: guest.attendees?.[index]?.name || "",
+          isConfirmed: guest.attendees?.[index]?.isConfirmed || false,
+        }))
+      );
     } else {
       setNotes("");
       setAttendees([]);

@@ -29,6 +29,14 @@ const AutocompleteInput = ({
   const [inputValue, setInputValue] = useState<string>("");
   const [suggestions, setSuggestions] = useState<Guest[]>([]);
   const [loading, setLoading] = useState(false);
+  const [selected, setSelected] = useState<Guest>({
+    name: "",
+    passes: 1,
+    email: "",
+    confirmation_status: "pending",
+    notes: "",
+    attendees: [],
+  });
 
   // Opciones en formato compatible con React-Select
   const getOptions = () => {
@@ -45,10 +53,22 @@ const AutocompleteInput = ({
     setInputValue(value);
   };
 
+  useEffect(() => {
+    handleSelectGuest(selected);
+  }, [selected]);
+
   const handleChange = (selectedOption: any) => {
     if (selectedOption) {
-      console.log(selectedOption.data);
-      handleSelectGuest(selectedOption.data); // Pasamos el invitado seleccionado
+      setSelected(selectedOption.data);
+    } else {
+      setSelected({
+        name: "",
+        passes: 1,
+        email: "",
+        confirmation_status: "pending",
+        notes: "",
+        attendees: [],
+      });
     }
   };
 
