@@ -20,17 +20,6 @@ type Attendee = {
   isConfirmed: boolean;
 };
 
-type Guest = {
-  id: string;
-  name: string;
-  email: string;
-  passes: number;
-  attendees: Attendee[];
-  confirmation_status?: string;
-  date_confirmation?: string;
-  notes?: string;
-};
-
 export default function WeddingInvitation() {
   const [name, setName] = useState<string>("");
   const [confirmationStatus, setConfirmationStatus] = useState<
@@ -620,7 +609,7 @@ export default function WeddingInvitation() {
               {/* Campos para pases */}
               <div>
                 <label className="block mb-2 text-lg font-sans">
-                  Confirma quiénes asistirán:
+                  Confirma tus acompañantes &#40;si aplica&#41;:
                 </label>
                 {Array.from({ length: passes - 1 }, (_, index) => (
                   <div key={index} className="flex items-center gap-2 mb-2">
