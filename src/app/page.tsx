@@ -404,6 +404,56 @@ export default function WeddingInvitation() {
           </div>
         </LazyMotionWrapper>
 
+        {/* Padres */}
+        <LazyMotionWrapper>
+          <div className="text-center mt-20 px-6">
+            {/* Título Padres */}
+            <h2 className="text-3xl font-serif tracking-wider mb-4">
+              Nuestros Padres
+            </h2>
+
+            {/* Contenedor de Padres */}
+            <div className="flex flex-col gap-6">
+              {/* Padres de Ella */}
+              <div className="bg-gray-100 p-4 rounded-lg shadow-sm">
+                <h3 className="text-xl font-serif mb-2">Padres de Ella</h3>
+                <p className="text-base font-sans">
+                  José Alberto Solis Rodriguez
+                </p>
+                <p className="text-base font-sans">Alicia Solis Rodriguez</p>
+              </div>
+
+              {/* Padres de Él */}
+              <div className="bg-gray-100 p-4 rounded-lg shadow-sm">
+                <h3 className="text-xl font-serif mb-2">Padres de Él</h3>
+                <p className="text-base font-sans">Mauro Lozano Valdivia</p>
+                <p className="text-base font-sans">
+                  Agripina Bañuelos Quintanilla
+                </p>
+              </div>
+            </div>
+          </div>
+        </LazyMotionWrapper>
+
+        {/* Padrinos */}
+        <LazyMotionWrapper>
+          <div className="text-center mt-14 px-6">
+            {/* Título Padrinos */}
+            <h2 className="text-3xl font-serif text-center mb-4 tracking-wider">
+              Nuestros Padrinos
+            </h2>
+
+            {/* Contenedor de Padrinos */}
+            <div className="bg-gray-100 p-4 rounded-lg shadow-sm">
+              <h3 className="text-xl font-serif mb-2">Padrinos de Velación</h3>
+              <p className="text-base font-sans">
+                Carlos Antonio Aguila Vazquez
+              </p>
+              <p className="text-base font-sans">Diana mMrisol Pulido Parra</p>
+            </div>
+          </div>
+        </LazyMotionWrapper>
+
         {/*Celebración*/}
         <div>
           <LazyMotionWrapper>
