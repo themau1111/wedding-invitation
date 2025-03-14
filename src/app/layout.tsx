@@ -15,6 +15,26 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Mau & Kary",
   description: "Invitacion para boda",
+  openGraph: {
+    title: "Mau & Kary - Invitación de boda",
+    description: "¡Estamos emocionados de invitarlos a nuestra boda!",
+    siteName: "Mau & Kary Boda",
+    images: [
+      {
+        url: "/opengraph-image.jpg", // Asegúrate de que la ruta sea accesible
+        width: 1200,
+        height: 630,
+        alt: "Invitación de boda de Mau & Kary",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Mau & Kary - Invitación de boda",
+    description: "¡Estamos emocionados de invitarlos a nuestra boda!",
+    images: ["/twitter-image.jpg"], // Mismo archivo de Open Graph
+  },
 };
 
 export default function RootLayout({
