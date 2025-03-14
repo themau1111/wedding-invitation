@@ -15,23 +15,6 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Mau & Kary",
   description: "Invitacion para boda",
-  icons: {
-    icon: "/favicon.ico", // Asegúrate de que el favicon es el nuevo
-  },
-  openGraph: {
-    title: "Mau & Kary - Invitación de Boda",
-    description: "Invitacion para nuestra boda",
-    url: "https://mauykary-wedding.vercel.app",
-    type: "website",
-    images: [
-      {
-        url: "/40.jpg", // Asegúrate de reemplazar esto con la nueva imagen
-        width: 1200,
-        height: 630,
-        alt: "Mau & Kary Invitación",
-      },
-    ],
-  },
 };
 
 export default function RootLayout({
