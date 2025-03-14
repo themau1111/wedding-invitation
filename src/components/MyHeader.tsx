@@ -12,30 +12,10 @@ const MyHeader = ({
 }) => {
   const [backgroundHeight, setBackgroundHeight] = useState(0);
 
-  // useEffect(() => {
-  //   const img = new Image();
-  //   img.src = "/foto-7.jpg";
-  //   img.onload = () => {
-  //     const aspectRatio = img.width / img.height;
-  //     const containerWidth = window.innerWidth * window.devicePixelRatio; // Ajuste para densidad de píxeles
-  //     const calculatedHeight = containerWidth / aspectRatio;
-  //     setBackgroundHeight(calculatedHeight);
-  //   };
-
-  //   const handleResize = () => {
-  //     const containerWidth = window.innerWidth * window.devicePixelRatio;
-  //     const calculatedHeight = containerWidth / (img.width / img.height);
-  //     setBackgroundHeight(calculatedHeight);
-  //   };
-
-  //   window.addEventListener("resize", handleResize);
-  //   return () => window.removeEventListener("resize", handleResize);
-  // }, []);
-
   useEffect(() => {
     // Cargar la imagen y calcular su tamaño dinámico
     const img = new Image();
-    img.src = "/foto-7.jpg";
+    img.src = "/25.jpg";
     img.onload = () => {
       const aspectRatio = img.width / img.height;
       const containerWidth = window.innerWidth;
@@ -61,13 +41,13 @@ const MyHeader = ({
       className="relative text-white"
       style={{
         height: `${backgroundHeight}px`, // La altura dinámica basada en el fondo
-        backgroundImage: "url(/foto-7.jpg)",
-        //  paddingTop: "calc(100% * (551.565 / 1080))",
+        backgroundImage: "url(/45.jpg)",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "top",
         backgroundColor: "#fff",
         marginBottom: "14em",
+        filter: "saturate(130%)",
       }}
     >
       {/* Botón de audio */}

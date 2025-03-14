@@ -8,10 +8,14 @@ const AnimatedImage = ({
   src,
   alt,
   animation,
+  zoom = 1, // Prop opcional con valor por defecto 1 (sin escala)
+  height = 500,
 }: {
   src: string;
   alt: string;
   animation: any;
+  zoom?: number; // Opcional
+  height?: number;
 }) => {
   const [ref, inView] = useInView({ triggerOnce: false, threshold: 0.3 });
 
@@ -25,10 +29,14 @@ const AnimatedImage = ({
     >
       <NextImage
         width={500}
-        height={500}
+        height={height}
         src={src}
         alt={alt}
         className="w-full h-full object-cover"
+        style={{
+          transform: `scale(${zoom})`, // Escala solo la imagen, sin afectar el contenedor
+          transformOrigin: "center center", // Mantiene el zoom centrado
+        }}
       />
     </motion.div>
   );

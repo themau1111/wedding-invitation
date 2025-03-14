@@ -14,6 +14,7 @@ import MyHeader from "@/components/MyHeader";
 import NextImage from "next/image";
 import AutocompleteInput from "@/components/AutocompleteInput";
 import React, { useRef } from "react";
+import Link from "next/link";
 
 type Attendee = {
   name: string;
@@ -301,7 +302,7 @@ export default function WeddingInvitation() {
         {/* Mostrar imagen principal */}
         <div className="flex justify-center mb-8">
           <NextImage
-            src="/foto-7.jpg"
+            src="/45.jpg"
             alt="Foto principal"
             className="w-full max-w-md object-contain"
             width={500}
@@ -449,7 +450,7 @@ export default function WeddingInvitation() {
               <p className="text-base font-sans">
                 Carlos Antonio Aguila Vazquez
               </p>
-              <p className="text-base font-sans">Diana mMrisol Pulido Parra</p>
+              <p className="text-base font-sans">Diana Marisol Pulido Parra</p>
             </div>
           </div>
         </LazyMotionWrapper>
@@ -543,9 +544,9 @@ export default function WeddingInvitation() {
 
           <div className="rounded overflow-hidden">
             <NextImage
-              src="/foto-5.jpg"
+              src="/34.jpg"
               alt="Foto 2"
-              className="w-full h-full object-contain"
+              className="w-full h-full object-contain saturate-150"
               width={500}
               height={500}
             />
@@ -841,7 +842,7 @@ export default function WeddingInvitation() {
               animation={shakeVariants}
             />
             <AnimatedImage
-              src="/foto-3.png"
+              src="/55.jpg"
               alt="Foto 3"
               animation={zoomInVariants}
             />
@@ -851,22 +852,51 @@ export default function WeddingInvitation() {
               animation={bounceVariants}
             />
             <AnimatedImage
-              src="/foto-5.jpg"
+              src="/10.jpg"
               alt="Foto 5"
+              zoom={1}
+              height={900}
               animation={shakeVariants}
             />
             <AnimatedImage
-              src="/foto-6.jpg"
+              src="/40.jpg"
               alt="Foto 6"
               animation={zoomInVariants}
             />
+            <AnimatedImage
+              src="/24.jpg"
+              alt="Foto 7"
+              animation={zoomInVariants}
+            />
+            <AnimatedImage
+              src="/25.jpg"
+              alt="Foto 7"
+              animation={zoomInVariants}
+            />
+            <AnimatedImage
+              src="/52.jpg"
+              alt="Foto 7"
+              animation={zoomInVariants}
+            />
+          </div>
+
+          {/* Ver mas fotos */}
+          <div className="flex justify-center items-center mt-5">
+            <Link
+              href="https://drive.google.com/drive/folders/1GLYg47Bj6mpgDoR43q_fdMPDwi8yCZr4?usp=sharing"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 underline text-lg"
+            >
+              Ver más fotos
+            </Link>
           </div>
         </section>
 
         {/* Footer */}
         <footer className="bg-gray-900 text-white text-center p-4">
           <p>
-            &copy; [2025] [Mauricio lozano & Karina Solis]. Todos los derechos
+            &copy; [2025] [Mauricio Lozano & Karina Solis]. Todos los derechos
             reservados.
           </p>
         </footer>
