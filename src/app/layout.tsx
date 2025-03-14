@@ -26,6 +26,12 @@ export const metadata: Metadata = {
         height: 630,
         alt: "Invitación de boda de Mau & Kary",
       },
+      {
+        url: "/opengraph-image.jpg", // Asegúrate de que la ruta sea accesible
+        width: 400,
+        height: 400,
+        alt: "Invitación de boda de Mau & Kary",
+      },
     ],
     type: "website",
   },
