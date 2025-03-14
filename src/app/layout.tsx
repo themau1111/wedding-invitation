@@ -33,7 +33,7 @@ export const metadata: Metadata = {
       //   alt: "Invitación de boda de Mau & Kary",
       // },
       {
-        url: "/og-image-square.jpg", // Asegúrate de que la ruta sea accesible
+        url: "/novios.png", // Asegúrate de que la ruta sea accesible
         width: 400,
         height: 400,
         alt: "Invitación de boda de Mau & Kary",
