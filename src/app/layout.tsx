@@ -20,8 +20,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Mau & Kary - Invitación de Boda",
-    description:
-      "Nuestra boda está por llegar. Te invitamos a celebrarlo con nosotros!",
+    description: "Invitacion para nuestra boda",
     url: "https://mauykary-wedding.vercel.app",
     type: "website",
     images: [
