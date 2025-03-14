@@ -20,20 +20,20 @@ export const metadata: Metadata = {
     description: "¡Estamos emocionados de invitarlos a nuestra boda!",
     siteName: "Mau & Kary Boda",
     images: [
-      // {
-      //   url: "/og-image.jpg", // Asegúrate de que la ruta sea accesible
-      //   width: 1200,
-      //   height: 630,
-      //   alt: "Invitación de boda de Mau & Kary",
-      // },
-      // {
-      //   url: "/og-image-square-min.jpg", // Asegúrate de que la ruta sea accesible
-      //   width: 400,
-      //   height: 400,
-      //   alt: "Invitación de boda de Mau & Kary",
-      // },
       {
-        url: "/novios.png", // Asegúrate de que la ruta sea accesible
+        url: "/og-image.jpg", // Asegúrate de que la ruta sea accesible
+        width: 1200,
+        height: 630,
+        alt: "Invitación de boda de Mau & Kary",
+      },
+      {
+        url: "/og-image-square-min.jpg", // Asegúrate de que la ruta sea accesible
+        width: 400,
+        height: 400,
+        alt: "Invitación de boda de Mau & Kary",
+      },
+      {
+        url: "/og-image-square.jpg", // Asegúrate de que la ruta sea accesible
         width: 400,
         height: 400,
         alt: "Invitación de boda de Mau & Kary",
