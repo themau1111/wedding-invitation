@@ -21,13 +21,19 @@ export const metadata: Metadata = {
     siteName: "Mau & Kary Boda",
     images: [
       {
-        url: "/opengraph-image.jpg", // Asegúrate de que la ruta sea accesible
+        url: "/og-image.jpg", // Asegúrate de que la ruta sea accesible
         width: 1200,
         height: 630,
         alt: "Invitación de boda de Mau & Kary",
       },
       {
-        url: "/opengraph-image.jpg", // Asegúrate de que la ruta sea accesible
+        url: "/og-image-square.jpg", // Asegúrate de que la ruta sea accesible
+        width: 400,
+        height: 400,
+        alt: "Invitación de boda de Mau & Kary",
+      },
+      {
+        url: "https://mauykary-wedding.vercel.app/og-image-square.jpg", // Asegúrate de que la ruta sea accesible
         width: 400,
         height: 400,
         alt: "Invitación de boda de Mau & Kary",
