@@ -348,7 +348,7 @@ export default function Admin() {
             </button>
             <button
               onClick={handleClear}
-              className="p-2 bg-blue-500 text-white rounded mt-4 hover:bg-blue-600 transition duration-200"
+              className="p-2 bg-blue-500 ml-5 text-white rounded mt-4 hover:bg-blue-600 transition duration-200"
             >
               Limpiar
             </button>
