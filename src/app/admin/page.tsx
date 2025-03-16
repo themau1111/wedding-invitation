@@ -84,6 +84,11 @@ export default function Admin() {
   };
 
   const handleDelete = async (id: any) => {
+    const confirmed = window.confirm(
+      "¿Estás seguro de que deseas eliminar este invitado?"
+    );
+    if (!confirmed) return;
+
     await supabase.from("guests").delete().eq("id", id);
     fetchGuests();
   };
@@ -137,6 +142,19 @@ export default function Admin() {
     });
     setAttendees("");
     fetchGuests();
+  };
+
+  const handleClear = () => {
+    setEditingGuest({
+      id: "",
+      name: "",
+      email: "",
+      passes: 0,
+      attendees: [],
+      confirmation_status: "Pendiente",
+      notes: "",
+    });
+    setAttendees("");
   };
 
   return (
@@ -327,6 +345,12 @@ export default function Admin() {
               className="p-2 bg-blue-500 text-white rounded mt-4 hover:bg-blue-600 transition duration-200"
             >
               Guardar
+            </button>
+            <button
+              onClick={handleClear}
+              className="p-2 bg-blue-500 text-white rounded mt-4 hover:bg-blue-600 transition duration-200"
+            >
+              Limpiar
             </button>
           </div>
         </div>
