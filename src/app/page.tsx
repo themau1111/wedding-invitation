@@ -786,18 +786,14 @@ export default function WeddingInvitation() {
         <LazyMotionWrapper>
           <div className="p-8 pt-10 shadow-md text-center">
             <NextImage
-              src="/el-palacio-de-hierro.svg"
+              src="/logo-amazon.png"
               alt="Foto 1"
-              className="w-full h-full object-contain"
+              className="w-full h-full object-contain mb-5"
               width={500}
               height={500}
             />
-            <p className="text-gray-600 text-sm uppercase tracking-wide mt-4">
-              No. de evento
-            </p>
-            <p className="text-2xl font-semibold text-gray-800 mb-6">393386</p>
             <a
-              href="Te comparto mi mesa de regalos Celebra https://www.elpalaciodehierro.com/buscar?eventId=393386"
+              href="https://www.amazon.com.mx/wedding/share/mauykary"
               target="_blank"
               rel="noopener noreferrer"
               className="px-6 py-3 bg-gray-700 text-white text-sm font-medium rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
