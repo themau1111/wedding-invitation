@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "../lib/supabase";
 import { useRouter } from "next/navigation";
 
@@ -37,8 +37,9 @@ export default function Admin() {
     confirmation_status: "Pendiente",
     notes: "",
   });
-  const [attendees, setAttendees] = useState<string>("");
+  const [attendees, setAttendees] = useState<Attendee[]>([]);
   const router = useRouter();
+  const formRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -67,9 +68,7 @@ export default function Admin() {
       }
 
       setEditingGuest(data); // Guardamos el registro completo
-      setAttendees(
-        data.attendees?.map((att: any) => att.name).join(", ") || "" // Convertimos el array a texto
-      );
+      setAttendees(Array.isArray(data.attendees) ? data.attendees : []);
     };
 
     if (editingGuest && editingGuest.id) fetchGuest(); // Llamar solo si `editingGuest` tiene un `id`
@@ -103,24 +102,24 @@ export default function Admin() {
       return;
     }
 
-    // Convertir texto plano en un array de objetos
-    const attendeesArray = attendees
-      .split(",")
-      .map((name) => ({ name: name.trim() }))
-      .filter((attendee) => attendee.name !== "");
+    // Normalizar los attendees: Si no están confirmados, dejarlos como "Pendiente"
+    const normalizedAttendees = attendees.map((attendee) => ({
+      name: attendee.name.trim(),
+      isConfirmed: attendee.isConfirmed === true, // Asegurar que siga siendo booleano
+    }));
 
     let result;
     if (editingGuest) {
       result = await supabase
         .from("guests")
-        .update({ ...editingGuest, attendees: attendeesArray })
+        .update({ ...editingGuest, attendees: normalizedAttendees })
         .eq("id", editingGuest.id); // Asegúrate de usar "id" como identificador único
     } else {
       // Crear un nuevo invitado, excluyendo el campo `id`
       const { id, ...newGuestWithoutId } = newGuest; // Excluir el campo `id`
       result = await supabase
         .from("guests")
-        .insert({ ...newGuestWithoutId, attendees: attendeesArray });
+        .insert({ ...newGuestWithoutId, attendees: normalizedAttendees });
     }
 
     if (result.error) {
@@ -140,21 +139,62 @@ export default function Admin() {
       confirmation_status: "Pendiente",
       notes: "",
     });
-    setAttendees("");
+    setAttendees([]);
     fetchGuests();
   };
 
   const handleClear = () => {
-    setEditingGuest({
-      id: "",
-      name: "",
-      email: "",
-      passes: 0,
-      attendees: [],
-      confirmation_status: "Pendiente",
-      notes: "",
+    setEditingGuest(null);
+    setAttendees([]);
+  };
+
+  const handleEditClick = (guest: Guest) => {
+    setEditingGuest(guest);
+    setAttendees(Array.isArray(guest.attendees) ? guest.attendees : []);
+
+    // Hacer scroll al formulario
+    if (formRef.current) {
+      formRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  const handlePassesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const passes = parseInt(e.target.value, 10) || 0;
+
+    // Ajustar la cantidad de asistentes según el número de pases
+    setAttendees((prevAttendees) => {
+      let updatedAttendees = [...prevAttendees];
+
+      if (passes > updatedAttendees.length) {
+        // Agregar asistentes hasta alcanzar el número de pases
+        for (let i = updatedAttendees.length; i < passes; i++) {
+          updatedAttendees.push({ name: "", isConfirmed: false });
+        }
+      } else if (passes < updatedAttendees.length) {
+        // Recortar la lista de asistentes si los pases son menores
+        updatedAttendees = updatedAttendees.slice(0, passes);
+      }
+
+      return updatedAttendees;
     });
-    setAttendees("");
+
+    if (editingGuest) {
+      setEditingGuest({ ...editingGuest, passes });
+    } else {
+      setNewGuest({ ...newGuest, passes });
+    }
+  };
+
+  const handleAttendeeChange = (
+    index: number,
+    field: "name" | "isConfirmed",
+    value: string | boolean
+  ) => {
+    setAttendees((prevAttendees) => {
+      const updatedAttendees = [...prevAttendees];
+      updatedAttendees[index] = { ...updatedAttendees[index], [field]: value };
+      return updatedAttendees;
+    });
   };
 
   return (
@@ -225,7 +265,7 @@ export default function Admin() {
                   <td className="border border-gray-300 p-2">
                     <div className="flex space-x-2">
                       <button
-                        onClick={() => setEditingGuest(guest)}
+                        onClick={() => handleEditClick(guest)}
                         className="p-2 bg-yellow-400 text-black rounded"
                       >
                         Editar
@@ -243,7 +283,7 @@ export default function Admin() {
             </tbody>
           </table>
 
-          <div className="p-4 bg-gray-100 rounded">
+          <div ref={formRef} className="p-4 bg-gray-100 rounded">
             <h2 className="text-xl font-bold text-gray-900">
               {editingGuest ? "Editar Invitado" : "Agregar Nuevo Invitado"}
             </h2>
@@ -281,15 +321,7 @@ export default function Admin() {
                   ? ""
                   : newGuest.passes
               }
-              onChange={(e) => {
-                const value =
-                  e.target.value === "" ? 0 : parseInt(e.target.value, 10);
-                if (editingGuest) {
-                  setEditingGuest({ ...editingGuest, passes: value });
-                } else {
-                  setNewGuest({ ...newGuest, passes: value });
-                }
-              }}
+              onChange={handlePassesChange}
               className="p-2 w-full border rounded mt-2 text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-blue-500"
             />
 
@@ -319,12 +351,40 @@ export default function Admin() {
             </select>
 
             {/* Acompañantes */}
-            <textarea
-              placeholder="Acompañantes (separados por comas)"
-              value={attendees}
-              onChange={(e) => setAttendees(e.target.value)}
-              className="p-2 w-full border rounded mt-2 text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-blue-500"
-            />
+            <div>
+              <h3 className="text-lg font-semibold">Acompañantes</h3>
+              {attendees.map((attendee, index) => (
+                <div
+                  key={index}
+                  className="flex text-gray-800 items-center gap-4"
+                >
+                  <input
+                    type="text"
+                    placeholder={`Acompañante ${index + 1}`}
+                    value={attendee.name}
+                    onChange={(e) =>
+                      handleAttendeeChange(index, "name", e.target.value)
+                    }
+                    className="p-2 border rounded w-full"
+                  />
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={attendee.isConfirmed}
+                      onChange={(e) =>
+                        handleAttendeeChange(
+                          index,
+                          "isConfirmed",
+                          e.target.checked
+                        )
+                      }
+                      className="mr-2"
+                    />
+                    Confirmado
+                  </label>
+                </div>
+              ))}
+            </div>
 
             {/* Notas */}
             <textarea
