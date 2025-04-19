@@ -32,7 +32,7 @@ export default function Admin() {
     id: "",
     name: "",
     email: "",
-    passes: 0,
+    passes: 1,
     attendees: [],
     confirmation_status: "Pendiente",
     notes: "",
@@ -161,18 +161,17 @@ export default function Admin() {
   const handlePassesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const passes = parseInt(e.target.value, 10) || 0;
 
-    // Ajustar la cantidad de asistentes según el número de pases
     setAttendees((prevAttendees) => {
       let updatedAttendees = [...prevAttendees];
 
-      if (passes > updatedAttendees.length) {
-        // Agregar asistentes hasta alcanzar el número de pases
-        for (let i = updatedAttendees.length; i < passes; i++) {
+      const numAcompanantes = Math.max(passes - 1, 0);
+
+      if (numAcompanantes > updatedAttendees.length) {
+        for (let i = updatedAttendees.length; i < numAcompanantes; i++) {
           updatedAttendees.push({ name: "", isConfirmed: false });
         }
-      } else if (passes < updatedAttendees.length) {
-        // Recortar la lista de asistentes si los pases son menores
-        updatedAttendees = updatedAttendees.slice(0, passes);
+      } else if (numAcompanantes < updatedAttendees.length) {
+        updatedAttendees = updatedAttendees.slice(0, numAcompanantes);
       }
 
       return updatedAttendees;
