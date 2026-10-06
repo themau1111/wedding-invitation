@@ -27,6 +27,7 @@ type Guest = {
 export default function Admin() {
   const [guests, setGuests] = useState<Guest[]>([]);
   const [loading, setLoading] = useState(true);
+  const [exporting, setExporting] = useState(false);
   const [editingGuest, setEditingGuest] = useState<Guest | null>(null);
   const [newGuest, setNewGuest] = useState<Guest>({
     id: "",
@@ -90,6 +91,43 @@ export default function Admin() {
 
     await supabase.from("guests").delete().eq("id", id);
     fetchGuests();
+  };
+
+  const handleExport = async () => {
+    const apiUrl = process.env.NEXT_PUBLIC_NOTIFICATION_API_URL;
+    if (!apiUrl) {
+      alert("La exportación administrativa no está configurada.");
+      return;
+    }
+
+    const {
+      data: { session },
+      error: sessionError,
+    } = await supabase.auth.getSession();
+
+    if (sessionError || !session?.access_token) {
+      alert("Tu sesión expiró. Inicia sesión nuevamente.");
+      router.push("/login");
+      return;
+    }
+
+    setExporting(true);
+    try {
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message || "No fue posible exportar");
+      alert("La lista se envió a los correos administrativos configurados.");
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "No fue posible exportar");
+    } finally {
+      setExporting(false);
+    }
   };
 
   const handleSave = async () => {
@@ -198,7 +236,16 @@ export default function Admin() {
 
   return (
     <div className="container mx-auto p-8">
-      <h1 className="text-3xl font-bold mb-4">Administrar Invitados</h1>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-3xl font-bold">Administrar Invitados</h1>
+        <button
+          onClick={handleExport}
+          disabled={exporting}
+          className="rounded bg-emerald-700 px-4 py-2 text-white disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {exporting ? "Enviando exportación..." : "Enviar lista de invitados"}
+        </button>
+      </div>
       {loading ? (
         <p>Cargando...</p>
       ) : (
